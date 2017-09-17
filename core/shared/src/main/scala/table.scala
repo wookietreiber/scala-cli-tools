@@ -1,14 +1,21 @@
 package scalax.cli
 
 import scala.collection.mutable.ListBuffer
+import shapeless._
+import shapeless.nat._
+import shapeless.ops.nat.GT._
+import shapeless.syntax.sized._
 
 /** Print a pretty command line table.
   *
   * {{{
-  * val table = Table("h1", "h2", "h3")
+  * import scalax.cli.Table
+  * import shapeless.Sized
   *
-  * table.rows += Seq("a", "b", "c")
-  * table.rows += Seq("d", "e", "f")
+  * val table = Table(Sized("h1", "h2", "h3"))
+  *
+  * table.rows += Sized("a", "b", "c")
+  * table.rows += Sized("d", "e", "f")
   *
   * table.alignments(1) = Table.Alignment.Right
   *
@@ -39,32 +46,24 @@ object Table {
     object Right extends Alignment
   }
 
-  /** Returns a new table builder.
-    *
-    * @usecase def apply(header: String*): Builder = ???
-    *   @inheritdoc
-    */
-  def apply(h: String, header: String*): Builder =
-    new Builder(h +: header)
-
   /** Returns a new table builder. */
-  def apply(header: Seq[String]): Builder =
+  def apply[N <: Nat](header: Sized[Seq[String], N])(
+      implicit ev: N > _0): Builder[N] =
     new Builder(header)
 
   /** A table builder.
     *
     * @param header Returns the table header.
     */
-  class Builder private[Table] (val header: Seq[String]) {
-    require(header.nonEmpty)
+  class Builder[N <: Nat] private[Table] (val header: Sized[Seq[String], N])(
+      implicit ev: N > _0) {
 
     /** The rows of the table. */
     object rows {
       private[Table] val rows = ListBuffer[Seq[String]]()
 
       /** Adds a row to the table. */
-      def +=(row: Seq[String]): Unit = {
-        require(row.size == header.size)
+      def +=(row: Sized[Seq[String], N]): Unit = {
         rows += row
       }
     }
@@ -75,6 +74,7 @@ object Table {
         Array.fill[Alignment](header.size)(Alignment.Left)
 
       /** Updates the alignment of a column. */
+      // TODO must check that index < N
       def update(index: Int, element: Alignment): Unit =
         alignments(index) = element
     }
@@ -113,8 +113,6 @@ object Table {
     } else {
       val size = header.size
 
-      require(rows.forall(_.size == size))
-      require(alignments.size == size)
       require(padding >= 0)
 
       object table {

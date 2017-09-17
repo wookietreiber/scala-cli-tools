@@ -1,15 +1,16 @@
 package scalax.cli
 
 import utest._
+import shapeless.Sized
 
 import Table.Alignment
 
 object TableTests extends TestSuite {
   val tests = this {
     'left {
-      val table = Table("1", "2", "3")
-      table.rows += Seq("a", "blah", "c")
-      table.rows += Seq("d", "e", "f")
+      val table = Table(Sized("1", "2", "3"))
+      table.rows += Sized("a", "blah", "c")
+      table.rows += Sized("d", "e", "f")
 
       val lines = table.lines
 
@@ -23,10 +24,10 @@ object TableTests extends TestSuite {
     }
 
     'right {
-      val table = Table("1", "2", "3")
+      val table = Table(Sized("1", "2", "3"))
       table.alignments(1) = Alignment.Right
-      table.rows += Seq("a", "blah", "c")
-      table.rows += Seq("d", "e", "f")
+      table.rows += Sized("a", "blah", "c")
+      table.rows += Sized("d", "e", "f")
 
       val lines = table.lines
 
@@ -40,10 +41,10 @@ object TableTests extends TestSuite {
     }
 
     'centerodd {
-      val table = Table("1", "2", "3")
+      val table = Table(Sized("1", "2", "3"))
       table.alignments(1) = Alignment.Center
-      table.rows += Seq("a", "foo", "c")
-      table.rows += Seq("d", "e", "f")
+      table.rows += Sized("a", "foo", "c")
+      table.rows += Sized("d", "e", "f")
 
       val lines = table.lines
 
@@ -57,10 +58,10 @@ object TableTests extends TestSuite {
     }
 
     'centereven {
-      val table = Table("1", "2", "3")
+      val table = Table(Sized("1", "2", "3"))
       table.alignments(1) = Alignment.Center
-      table.rows += Seq("a", "blah", "c")
-      table.rows += Seq("d", "e", "f")
+      table.rows += Sized("a", "blah", "c")
+      table.rows += Sized("d", "e", "f")
 
       val lines = table.lines
 

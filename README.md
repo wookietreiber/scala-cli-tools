@@ -10,11 +10,12 @@ Print a pretty command line table.
 // create the table builder object
 
 import scalax.cli.Table
+import shapeless.Sized
 
-val table = Table("h1", "h2", "h3")
+val table = Table(Sized("h1", "h2", "h3"))
 
-table.rows += Seq("a", "b", "c")
-table.rows += Seq("d", "e", "f")
+table.rows += Sized("a", "b", "c")
+table.rows += Sized("d", "e", "f")
 
 table.alignments(1) = Table.Alignment.Right
 

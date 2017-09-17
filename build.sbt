@@ -102,6 +102,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       "-doc-root-content", "core/rootdoc.txt"
     ),
     libraryDependencies ++= Seq(
+      "com.chuusai" %%% "shapeless" % "2.3.3",
       "com.lihaoyi" %%% "utest" % "0.6.4" % "test"
     ),
     testFrameworks := Seq(new TestFramework("utest.runner.Framework"))
