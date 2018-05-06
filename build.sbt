@@ -9,7 +9,7 @@ val scala212 = "2.12.3"
 val baseSettings = Seq(
   organization := "com.github.wookietreiber",
   name := "scala-cli-tools",
-  git.baseVersion := "0.0.1",
+  git.baseVersion := "0.1.0",
 
   scalaVersion := scala211,
   crossScalaVersions := Seq(scala210, scala211, scala212),
