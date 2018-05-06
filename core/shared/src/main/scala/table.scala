@@ -1,10 +1,10 @@
 package scalax.cli
 
 import scala.collection.mutable.ListBuffer
-import shapeless._
-import shapeless.nat._
-import shapeless.ops.nat.GT._
-import shapeless.syntax.sized._
+import shapeless.Nat
+import shapeless.nat._0
+import shapeless.ops.nat.GT.>
+import shapeless.Sized
 
 /** Print a pretty command line table.
   *
@@ -74,12 +74,11 @@ object Table {
         Array.fill[Alignment](header.size)(Alignment.Left)
 
       /** Updates the alignment of a column. */
-      // TODO must check that index < N
       def update(index: Int, element: Alignment): Unit =
         alignments(index) = element
     }
 
-    private var _padding = 1
+    private[this] var _padding = 1
 
     /** Returns the table padding. */
     def padding: Int = _padding
@@ -150,10 +149,10 @@ object Table {
     } yield {
       val cell = alignContent(content, size, alignments(col))
 
-      val prefix = " " * (if (col == 0) 0 else padding)
-      val suffix = " " * (if (col == row.size - 1) 0 else padding)
+      val prefix = spaces(if (col == 0) 0 else padding)
+      val suffix = spaces(if (col == row.size - 1) 0 else padding)
 
-      s"""${prefix}${cell}${suffix}"""
+      s"${prefix}${cell}${suffix}"
     }
 
     padded.mkString("|")
@@ -166,18 +165,21 @@ object Table {
 
     alignment match {
       case Alignment.Center =>
-        val prefix = " " * ((size - l) / 2)
-        val suffix = " " * (((size - l) / 2) + (size - l) % 2)
+        val prefix = spaces((size - l) / 2)
+        val suffix = spaces(((size - l) / 2) + (size - l) % 2)
         s"${prefix}${content}${suffix}"
 
       case Alignment.Left =>
-        val suffix = " " * (size - l)
+        val suffix = spaces(size - l)
         s"${content}${suffix}"
 
       case Alignment.Right =>
-        val prefix = " " * (size - l)
+        val prefix = spaces(size - l)
         s"${prefix}${content}"
     }
   }
+
+  private[Table] def spaces(n: Int): String =
+    " " * n
 
 }
