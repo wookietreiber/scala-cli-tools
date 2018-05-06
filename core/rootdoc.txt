@@ -1,0 +1,3 @@
+A collection of Scala command-line interface tools.
+
+  - [[scalax.cli.Table$ `Table`]] tabular output
