@@ -66,7 +66,7 @@ lazy val baseSettings = Seq(
     Some("scm:git:https://github.com/wookietreiber/scala-cli-tools.git")
   )),
   licenses := Seq(
-    "APL2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt")
+    "BSD 3-Clause" -> url("https://opensource.org/licenses/BSD-3-Clause")
   ),
   developers += Developer(
     email = "christian.krause@mailbox.org",
