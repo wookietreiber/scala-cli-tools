@@ -29,12 +29,8 @@ import scala.collection.mutable.ListBuffer
   */
 object Table {
 
-  // TODO compiler assurance: all rows have the same length
-  // TODO compiler assurance: number of alignments is number of columns
-  // TODO compiler assurance: number of header columns is number of columns
-
   /** Table column horizontal alignment. */
-  sealed trait Alignment
+  sealed abstract class Alignment
 
   /** Contains alignments. */
   object Alignment {
@@ -60,7 +56,7 @@ object Table {
     * @param header Returns the table header.
     */
   class Builder private[Table] (val header: Seq[String]) {
-    require(header.size > 0)
+    require(header.nonEmpty)
 
     /** The rows of the table. */
     object rows {
@@ -96,7 +92,7 @@ object Table {
 
     /** Returns the ready-to-be-printed table. */
     def lines: List[String] = {
-      Table.lines(rows.rows, padding)(header: _*)(alignments.alignments: _*)
+      Table.lines(rows.rows, padding, header, alignments.alignments)
     }
 
     /** Prints the table.
@@ -104,18 +100,14 @@ object Table {
       * @usecase def print(): Unit = ???
       *   @inheritdoc
       */
-    def print(stream: java.io.PrintStream = Console.out): Unit = {
+    def print(stream: java.io.PrintStream = Console.out): Unit =
       lines foreach stream.println
-    }
   }
 
-  /** Pretty prints a table on the console.
-    *
-    * Rows, header and align must all have the same size.
-    *
-    * If rows is empty, nothing happens.
-    */
-  def lines(rows: Seq[Seq[String]], padding: Int = 1)(header: String*)(alignments: Alignment*): List[String] =
+  private[Table] def lines(rows: ListBuffer[Seq[String]],
+                           padding: Int,
+                           header: Seq[String],
+                           alignments: Seq[Alignment]): List[String] =
     if (rows.isEmpty) {
       Nil
     } else {
@@ -126,15 +118,16 @@ object Table {
       require(padding >= 0)
 
       object table {
-        val data: Seq[Seq[String]] = Seq(header) ++ rows // TODO should work without
-        val padding = 1 // TODO not using padding here ...
+        val data: Seq[Seq[String]] = Seq(header) ++ rows
+
         object size {
-          val data: Seq[Int] = for (i <- header.indices) yield // TODO don't rely on indices
-            table.data.map(_(i).size).max
+          val data: Seq[Int] = for (i <- header.indices)
+            yield table.data.map(_(i).size).max
+
           val padded: Seq[Int] = if (data.size > 2) {
             val p = data.map(_ + padding * 2)
-            // TODO better solution than using updated?
-            p.updated(0, p.head - padding).updated(p.size - 1, p.last - padding)
+            p.updated(0, p.head - padding)
+              .updated(p.size - 1, p.last - padding)
           } else {
             data.map(_ + padding)
           }
@@ -142,26 +135,28 @@ object Table {
       }
 
       def makeRow(row: Seq[String]): String = {
-        (row.zipWithIndex zip table.size.data).map({
-          case ((cell, index), size) =>
-            val l = cell.length
+        (row.zipWithIndex zip table.size.data)
+          .map({
+            case ((cell, index), size) =>
+              val l = cell.length
 
-            alignments(index) match {
-              case Alignment.Center =>
-                val prefix = " " *  ((size - l) / 2)
-                val suffix = " " * (((size - l) / 2) + (size - l) % 2)
+              alignments(index) match {
+                case Alignment.Center =>
+                  val prefix = " " * ((size - l) / 2)
+                  val suffix = " " * (((size - l) / 2) + (size - l) % 2)
 
-                s"$prefix$cell$suffix"
+                  s"$prefix$cell$suffix"
 
-              case Alignment.Left =>
-                val suffix = " " * (size - l)
-                s"$cell$suffix"
+                case Alignment.Left =>
+                  val suffix = " " * (size - l)
+                  s"$cell$suffix"
 
-              case Alignment.Right =>
-                val prefix = " " * (size - l)
-                s"$prefix$cell"
-            }
-        }).mkString(" | ")
+                case Alignment.Right =>
+                  val prefix = " " * (size - l)
+                  s"$prefix$cell"
+              }
+          })
+          .mkString(" | ")
       }
 
       val buf = new ListBuffer[String]()

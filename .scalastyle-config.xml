@@ -62,7 +62,7 @@
   <check class="org.scalastyle.scalariform.FieldNamesChecker"
          enabled="true" level="warning" >
     <parameters>
-      <parameter name="regex">^[A-Za-z][A-Za-z0-9]*$</parameter>
+      <parameter name="regex">^_?[A-Za-z][A-Za-z0-9]*$</parameter>
       <parameter name="objectFieldRegex">^[A-Za-z][A-Za-z0-9]*$</parameter>
     </parameters>
   </check>
