@@ -92,7 +92,7 @@ object Table {
 
     /** Returns the ready-to-be-printed table. */
     def lines: List[String] = {
-      Table.lines(rows.rows, padding, header, alignments.alignments)
+      Table.lines(header, rows.rows, alignments.alignments, padding)
     }
 
     /** Prints the table.
@@ -104,73 +104,80 @@ object Table {
       lines foreach stream.println
   }
 
-  private[Table] def lines(rows: ListBuffer[Seq[String]],
-                           padding: Int,
-                           header: Seq[String],
-                           alignments: Seq[Alignment]): List[String] =
+  private[Table] def lines(header: Seq[String],
+                           rows: ListBuffer[Seq[String]],
+                           alignments: Seq[Alignment],
+                           padding: Int): List[String] =
     if (rows.isEmpty) {
       Nil
     } else {
-      val size = header.size
+      val data = header +: rows
 
-      require(padding >= 0)
+      val rawSizes: Seq[Int] = for {
+        i <- header.indices
+      } yield data.map(_(i).size).max
 
-      object table {
-        val data: Seq[Seq[String]] = Seq(header) ++ rows
-
-        object size {
-          val data: Seq[Int] = for (i <- header.indices)
-            yield table.data.map(_(i).size).max
-
-          val padded: Seq[Int] = if (data.size > 2) {
-            val p = data.map(_ + padding * 2)
-            p.updated(0, p.head - padding)
-              .updated(p.size - 1, p.last - padding)
-          } else {
-            data.map(_ + padding)
-          }
+      val paddedSizes: Seq[Int] =
+        rawSizes.zipWithIndex map {
+          case (size, i) if i == 0 || i == (header.size - 1) =>
+            size + padding
+          case (size, i) =>
+            size + padding * 2
         }
-      }
-
-      def makeRow(row: Seq[String]): String = {
-        (row.zipWithIndex zip table.size.data)
-          .map({
-            case ((cell, index), size) =>
-              val l = cell.length
-
-              alignments(index) match {
-                case Alignment.Center =>
-                  val prefix = " " * ((size - l) / 2)
-                  val suffix = " " * (((size - l) / 2) + (size - l) % 2)
-
-                  s"$prefix$cell$suffix"
-
-                case Alignment.Left =>
-                  val suffix = " " * (size - l)
-                  s"$cell$suffix"
-
-                case Alignment.Right =>
-                  val prefix = " " * (size - l)
-                  s"$prefix$cell"
-              }
-          })
-          .mkString(" | ")
-      }
 
       val buf = new ListBuffer[String]()
 
-      // print header
-      buf += makeRow(header)
+      // header
+      buf += makeRow(header, rawSizes, alignments, padding)
 
-      // print border between header and body
-      buf += table.size.padded.map("-" * _).mkString("|")
+      // border between header and body
+      buf += paddedSizes.map("-" * _).mkString("|")
 
-      // print body
+      // body
       for (row <- rows) {
-        buf += makeRow(row)
+        buf += makeRow(row, rawSizes, alignments, padding)
       }
 
       buf.toList
     }
+
+  private[Table] def makeRow(row: Seq[String],
+                             sizes: Seq[Int],
+                             alignments: Seq[Alignment],
+                             padding: Int): String = {
+    val padded = for {
+      ((content, col), size) <- (row.zipWithIndex zip sizes)
+    } yield {
+      val cell = alignContent(content, size, alignments(col))
+
+      val prefix = " " * (if (col == 0) 0 else padding)
+      val suffix = " " * (if (col == row.size - 1) 0 else padding)
+
+      s"""${prefix}${cell}${suffix}"""
+    }
+
+    padded.mkString("|")
+  }
+
+  private[Table] def alignContent(content: String,
+                                  size: Int,
+                                  alignment: Alignment): String = {
+    val l = content.length
+
+    alignment match {
+      case Alignment.Center =>
+        val prefix = " " * ((size - l) / 2)
+        val suffix = " " * (((size - l) / 2) + (size - l) % 2)
+        s"${prefix}${content}${suffix}"
+
+      case Alignment.Left =>
+        val suffix = " " * (size - l)
+        s"${content}${suffix}"
+
+      case Alignment.Right =>
+        val prefix = " " * (size - l)
+        s"${prefix}${content}"
+    }
+  }
 
 }
