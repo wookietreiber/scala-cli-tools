@@ -4,9 +4,24 @@
 
 A collection of Scala command-line interface tools.
 
-## Table
+## Library
 
-Print a pretty command line table.
+### Memory
+
+Humanize or dehumanize bytes:
+
+```scala
+import scalax.cli.Memory
+
+Memory.humanize(10485760) // "10 MiB"
+
+implicit val MU = Memory.SI
+Memory.dehumanize("10 MB") // Some(10000000)
+```
+
+### Table
+
+Print a pretty command line table:
 
 ```scala
 // create the table builder object
