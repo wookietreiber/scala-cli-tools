@@ -143,13 +143,24 @@ lazy val humanize = project
     noPublish
   )
 
+lazy val highlight = project
+  .enablePlugins(BuildInfoPlugin, ScalaNativePlugin)
+  .dependsOn(coreNative)
+  .settings(
+    baseSettings,
+    name := "highlight",
+    appSettings,
+    noPublish
+  )
+
 lazy val root = (project in file("."))
   .aggregate(
     coreJVM,
     coreJS,
     coreNative,
     dehumanize,
-    humanize
+    humanize,
+    highlight
   )
   .settings(
     baseSettings,
