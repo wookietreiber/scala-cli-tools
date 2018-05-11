@@ -115,11 +115,41 @@ lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
 lazy val coreNative = core.native
 
+lazy val appSettings = Seq(
+  scalaVersion := scala211,
+  crossScalaVersions := Seq(scala211),
+  libraryDependencies += "com.github.scopt" %%% "scopt" % "3.7.0",
+  buildInfoKeys := Seq[BuildInfoKey](name, version),
+  buildInfoPackage := "scalax.cli"
+)
+
+lazy val dehumanize = project
+  .enablePlugins(BuildInfoPlugin, ScalaNativePlugin)
+  .dependsOn(coreNative)
+  .settings(
+    baseSettings,
+    name := "dehumanize",
+    appSettings,
+    noPublish
+  )
+
+lazy val humanize = project
+  .enablePlugins(BuildInfoPlugin, ScalaNativePlugin)
+  .dependsOn(coreNative)
+  .settings(
+    baseSettings,
+    name := "humanize",
+    appSettings,
+    noPublish
+  )
+
 lazy val root = (project in file("."))
   .aggregate(
     coreJVM,
     coreJS,
-    coreNative
+    coreNative,
+    dehumanize,
+    humanize
   )
   .settings(
     baseSettings,
