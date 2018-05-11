@@ -91,9 +91,6 @@ lazy val noPublish = Seq(
   publishLocal := {}
 )
 
-baseSettings
-noPublish
-
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     name := "scala-cli-tools",
@@ -117,3 +114,14 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
 lazy val coreNative = core.native
+
+lazy val root = (project in file("."))
+  .aggregate(
+    coreJVM,
+    coreJS,
+    coreNative
+  )
+  .settings(
+    baseSettings,
+    noPublish
+  )
