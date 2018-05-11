@@ -120,7 +120,8 @@ lazy val appSettings = Seq(
   crossScalaVersions := Seq(scala211),
   libraryDependencies += "com.github.scopt" %%% "scopt" % "3.7.0",
   buildInfoKeys := Seq[BuildInfoKey](name, version),
-  buildInfoPackage := "scalax.cli"
+  buildInfoPackage := "scalax.cli",
+  nativeMode := sys.env.getOrElse("NATIVE_MODE", "debug")
 )
 
 lazy val dehumanize = project
@@ -153,6 +154,10 @@ lazy val highlight = project
     noPublish
   )
 
+val prefix = settingKey[String]("Installation prefix.")
+
+val install = taskKey[Unit]("Install to prefix.")
+
 lazy val root = (project in file("."))
   .aggregate(
     coreJVM,
@@ -165,4 +170,26 @@ lazy val root = (project in file("."))
   .settings(
     baseSettings,
     noPublish
+  )
+  .settings(
+    prefix := sys.env.getOrElse("PREFIX", "/usr/local"),
+    install := {
+      import java.nio.file.Files
+      import java.nio.file.StandardCopyOption._
+
+      val bindir = file(prefix.value) / "bin"
+      if (!bindir.exists) bindir.mkdirs()
+
+      val dehumanizeS = (dehumanize/nativeLink in Compile).value.toPath
+      val highlightS = (highlight/nativeLink in Compile).value.toPath
+      val humanizeS = (humanize/nativeLink in Compile).value.toPath
+
+      val dehumanizeT = (bindir / "dehumanize").toPath
+      val highlightT = (bindir / "highlight").toPath
+      val humanizeT = (bindir / "humanize").toPath
+
+      Files.copy(dehumanizeS, dehumanizeT, COPY_ATTRIBUTES, REPLACE_EXISTING)
+      Files.copy(highlightS,  highlightT,  COPY_ATTRIBUTES, REPLACE_EXISTING)
+      Files.copy(humanizeS,   humanizeT,   COPY_ATTRIBUTES, REPLACE_EXISTING)
+    }
   )

@@ -50,3 +50,28 @@ table.print(Console.err)
 // a  |  b | c
 // d  |  e | f
 ```
+
+## Apps
+
+- **dehumanize** un-pretty-print byte values
+- **highlight** search for pattern and highlight matches
+- **humanize** pretty-print byte values
+
+### Installation
+
+#### Arch Linux
+
+Install all apps with the [**scala-cli-tools** AUR package](https://aur.archlinux.org/packages/scala-cli-tools/):
+
+```bash
+pacaur -S scala-cli-tools
+```
+
+#### Manual
+
+Install all apps to `~/bin`:
+
+```bash
+PREFIX=$HOME NATIVE_MODE=release \
+  sbt install
+```
