@@ -1,27 +1,47 @@
+// ----------------------------------------------------------------------------
+// sbt plugins
+// ----------------------------------------------------------------------------
+
 import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 enablePlugins(GitVersioning)
+
+// ----------------------------------------------------------------------------
+// basic project settings
+// ----------------------------------------------------------------------------
+
+organization in ThisBuild := "com.github.wookietreiber"
+
+git.baseVersion in ThisBuild := "0.1.0"
+
+// ----------------------------------------------------------------------------
+// scala compiler options
+// ----------------------------------------------------------------------------
+
+scalacOptions in ThisBuild ++= Seq(
+  "-deprecation",
+  "-encoding",
+  "UTF-8",
+  "-feature",
+  "-unchecked"
+)
+
+scalacOptions in ThisBuild ++= Seq(scalaBinaryVersion.value match {
+  case v if v.startsWith("2.12") => "-target:jvm-1.8"
+  case _                         => "-target:jvm-1.7"
+})
+
+// ----------------------------------------------------------------------------
+// base settings
+// ----------------------------------------------------------------------------
 
 val scala210 = "2.10.7"
 val scala211 = "2.11.12"
 val scala212 = "2.12.6"
 
 lazy val baseSettings = Seq(
-  organization := "com.github.wookietreiber",
-  git.baseVersion := "0.1.0",
   scalaVersion := scala212,
   crossScalaVersions := Seq(scala210, scala211, scala212),
-  scalacOptions ++= Seq(
-    "-deprecation",
-    "-encoding",
-    "UTF-8",
-    "-feature",
-    "-unchecked"
-  ),
-  scalacOptions ++= Seq(scalaBinaryVersion.value match {
-    case v if v.startsWith("2.12") => "-target:jvm-1.8"
-    case _                         => "-target:jvm-1.7"
-  }),
   scalacOptions in (Compile, doc) ++= {
     val tree = if (version.value == git.baseVersion.value) {
       s"v${version.value}"
@@ -91,6 +111,10 @@ lazy val noPublish = Seq(
   publishLocal := {}
 )
 
+// ----------------------------------------------------------------------------
+// projects
+// ----------------------------------------------------------------------------
+
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     name := "scala-cli-tools",
@@ -153,6 +177,10 @@ lazy val highlight = project
     appSettings,
     noPublish
   )
+
+// ----------------------------------------------------------------------------
+// install
+// ----------------------------------------------------------------------------
 
 val prefix = settingKey[String]("Installation prefix.")
 
