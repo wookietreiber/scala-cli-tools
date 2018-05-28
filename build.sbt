@@ -115,7 +115,7 @@ lazy val noPublish = Seq(
 // projects
 // ----------------------------------------------------------------------------
 
-lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val core = crossProject(JVMPlatform, NativePlatform)
   .settings(
     name := "scala-cli-tools",
     baseSettings,
@@ -128,7 +128,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     ),
     testFrameworks := Seq(new TestFramework("utest.runner.Framework"))
   )
-  .jsSettings()
   .nativeSettings(
     scalaVersion := scala211,
     crossScalaVersions := Seq(scala211),
@@ -136,7 +135,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
 
 lazy val coreJVM = core.jvm
-lazy val coreJS = core.js
 lazy val coreNative = core.native
 
 lazy val appSettings = Seq(
@@ -189,7 +187,6 @@ val install = taskKey[Unit]("Install to prefix.")
 lazy val root = (project in file("."))
   .aggregate(
     coreJVM,
-    coreJS,
     coreNative,
     dehumanize,
     humanize,
