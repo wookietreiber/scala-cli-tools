@@ -1,10 +1,27 @@
-# Scala CLI Tools
+Scala CLI Tools
+===============
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/67d9aaafa59a414e9b808ef45abb3fb0)](https://www.codacy.com/app/wookietreiber/scala-cli-tools?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wookietreiber/scala-cli-tools&amp;utm_campaign=Badge_Grade)
 
 A collection of Scala command-line interface tools.
 
-## Library
+Table of Contents
+-----------------
+
+<!-- toc -->
+
+- [Library](#library)
+  * [Memory](#memory)
+  * [Table](#table)
+- [Apps](#apps)
+- [Installation](#installation)
+  * [Arch Linux](#arch-linux)
+  * [Manual](#manual)
+
+<!-- tocstop -->
+
+Library
+-------
 
 ### Memory
 
@@ -51,15 +68,17 @@ table.print(Console.err)
 // d  |  e | f
 ```
 
-## Apps
+Apps
+----
 
 - **dehumanize** un-pretty-print byte values
 - **highlight** search for pattern and highlight matches
 - **humanize** pretty-print byte values
 
-### Installation
+Installation
+------------
 
-#### Arch Linux
+### Arch Linux
 
 Install all apps with the [**scala-cli-tools** AUR package](https://aur.archlinux.org/packages/scala-cli-tools/):
 
@@ -67,7 +86,7 @@ Install all apps with the [**scala-cli-tools** AUR package](https://aur.archlinu
 pacaur -S scala-cli-tools
 ```
 
-#### Manual
+### Manual
 
 Install all apps to `~/bin`:
 
