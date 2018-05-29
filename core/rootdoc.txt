@@ -1,3 +1,5 @@
+== Scala CLI Tools ==
+
 A collection of Scala command-line interface tools.
 
   - [[scalax.cli.Memory$ `Memory`]] de/humanize bytes
