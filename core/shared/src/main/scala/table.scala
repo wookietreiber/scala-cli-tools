@@ -103,6 +103,9 @@ object Table {
       lines foreach stream.println
   }
 
+  private[Table] def max(numbers: Seq[Int]): Int =
+    numbers.foldLeft(0)(math.max(_, _))
+
   private[Table] def lines(header: Seq[String],
                            rows: ListBuffer[Seq[String]],
                            alignments: Seq[Alignment],
@@ -114,7 +117,7 @@ object Table {
 
       val rawSizes: Seq[Int] = for {
         i <- header.indices
-      } yield data.map(_(i).size).max
+      } yield max(data.map(_(i).size))
 
       val paddedSizes: Seq[Int] =
         rawSizes.zipWithIndex map {
