@@ -75,6 +75,7 @@ Apps
 - **dehumanize** un-pretty-print byte values
 - **highlight** search for pattern and highlight matches
 - **humanize** pretty-print byte values
+- **meansd** print mean and standard deviation
 
 Installation
 ------------

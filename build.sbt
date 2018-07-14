@@ -176,6 +176,16 @@ lazy val highlight = project
     noPublish
   )
 
+lazy val meansd = project
+  .enablePlugins(BuildInfoPlugin, ScalaNativePlugin)
+  .dependsOn(coreNative)
+  .settings(
+    baseSettings,
+    name := "meansd",
+    appSettings,
+    noPublish
+  )
+
 // ----------------------------------------------------------------------------
 // install
 // ----------------------------------------------------------------------------
@@ -190,7 +200,8 @@ lazy val root = (project in file("."))
     coreNative,
     dehumanize,
     humanize,
-    highlight
+    highlight,
+    meansd
   )
   .settings(
     baseSettings,
@@ -208,13 +219,16 @@ lazy val root = (project in file("."))
       val dehumanizeS = (dehumanize/nativeLink in Compile).value.toPath
       val highlightS = (highlight/nativeLink in Compile).value.toPath
       val humanizeS = (humanize/nativeLink in Compile).value.toPath
+      val meansdS = (meansd/nativeLink in Compile).value.toPath
 
       val dehumanizeT = (bindir / "dehumanize").toPath
       val highlightT = (bindir / "highlight").toPath
       val humanizeT = (bindir / "humanize").toPath
+      val meansdT = (bindir / "meansd").toPath
 
       Files.copy(dehumanizeS, dehumanizeT, COPY_ATTRIBUTES, REPLACE_EXISTING)
       Files.copy(highlightS,  highlightT,  COPY_ATTRIBUTES, REPLACE_EXISTING)
       Files.copy(humanizeS,   humanizeT,   COPY_ATTRIBUTES, REPLACE_EXISTING)
+      Files.copy(meansdS,     meansdT,     COPY_ATTRIBUTES, REPLACE_EXISTING)
     }
   )

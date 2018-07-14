@@ -3,4 +3,5 @@
 A collection of Scala command-line interface tools.
 
   - [[scalax.cli.Memory$ `Memory`]] de/humanize bytes
+  - [[scalax.cli.Stats$ `Stats`]] provides statistics functions
   - [[scalax.cli.Table$ `Table`]] tabular output
