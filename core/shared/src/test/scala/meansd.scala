@@ -26,5 +26,20 @@ object MeansdTests extends TestSuite {
         assert(n == 100000, mean == 42, sd == 0)
       }
     }
+
+    'meansdBin {
+      'simple {
+        val numbers = Iterator(1.0, 2.0, 3.0, 6.0, 7.0, 8.0)
+        val data = Stats.meansdBinned(numbers, 5L).toArray
+
+        val (t0, b0, n0, m0, s0) = data(0)
+        val (t1, b1, n1, m1, s1) = data(1)
+
+        assert(
+          t0 == 0, b0 ==  5, n0 == 3, m0 == 2, s0 == 1,
+          t1 == 5, b1 == 10, n1 == 3, m1 == 7, s1 == 1
+        )
+      }
+    }
   }
 }

@@ -6,7 +6,8 @@ import scala.io.Source
 object meansd extends App {
 
   final case class Config(
-    files: List[File] = Nil
+    files: List[File] = Nil,
+    binWidth: Option[Long] = None
   )
 
   val parser = new scopt.OptionParser[Config](BuildInfo.name) {
@@ -30,6 +31,10 @@ object meansd extends App {
             |options:
             |""".stripMargin)
 
+    opt[Long]('w', "bin-width")
+      .action((x, c) => c.copy(binWidth = Some(x)))
+      .text("specify bin width to group input by")
+
     note("\nother options:\n")
 
     help("help").text("prints this usage text")
@@ -50,15 +55,24 @@ object meansd extends App {
           files.map(Source.fromFile)
         }
 
-      val (n, mean, sd) = Stats.meansd(sources) { error =>
+      val handler = (error: Throwable) => {
         Console.err.println(s"""${BuildInfo.name}: ${error.getMessage}""")
+      }
+
+      config.binWidth match {
+        case Some(binWidth) =>
+          for {
+            (binbottom, bintop, n, mean, sd) <- Stats.meansdBinned(sources, binWidth)(handler)
+          } println(s"""$binbottom - $bintop -> n=$n ∅ $mean ± $sd""")
+
+        case None =>
+          val (n, mean, sd) = Stats.meansd(sources)(handler)
+          println(s"""n=$n ∅ $mean ± $sd""")
       }
 
       if (!files.isEmpty) {
         sources.foreach(_.close())
       }
-
-      println(s"""n=$n ∅ $mean ± $sd""")
 
     case None =>
   }
