@@ -1,0 +1,36 @@
+sudo: false
+
+os: linux
+dist: trusty
+
+addons:
+  apt:
+    update: true
+
+language: scala
+
+matrix:
+  include:
+    - scala: 2.10.7
+      jdk: openjdk8
+      script: sbt ++$TRAVIS_SCALA_VERSION coreJVM/test
+
+    - scala: 2.11.12
+      jdk: openjdk8
+      sudo: required
+      before_script:
+        - curl https://raw.githubusercontent.com/scala-native/scala-native/master/scripts/travis_setup.sh | bash -x
+      script: sbt ++$TRAVIS_SCALA_VERSION compile coreJVM/test coreNative/test
+
+    - scala: 2.12.6
+      jdk: openjdk8
+      script: sbt ++$TRAVIS_SCALA_VERSION coreJVM/test
+
+before_cache:
+  - find $HOME/.ivy2/cache -type f -name "ivydata-*.properties" -delete
+  - find $HOME/.sbt -type f -name "*.lock" -delete
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
