@@ -16,6 +16,14 @@ object MemoryTests extends TestSuite {
           assert(result == expect)
         }
 
+        'mebibyte {
+          val orig = 1048576
+          val expect = "1 MiB"
+          val result = Memory.humanize(orig)
+
+          assert(result == expect)
+        }
+
         'mebibytes {
           val orig = 10485760
           val expect = "10 MiB"
@@ -59,6 +67,14 @@ object MemoryTests extends TestSuite {
         'bytes {
           val orig = 999
           val expect = "999 B"
+          val result = Memory.humanize(orig)
+
+          assert(result == expect)
+        }
+
+        'megabyte {
+          val orig = 1000000
+          val expect = "1 MB"
           val result = Memory.humanize(orig)
 
           assert(result == expect)

@@ -104,7 +104,7 @@ object Memory {
     def recurse(units: List[String], n: Int): String = {
       val unit :: tail = units
 
-      if (bytes > math.pow(mu.base, n + 1)) {
+      if (bytes >= math.pow(mu.base, n + 1)) {
         recurse(tail, n + 1)
       } else {
         s"${(bytes / math.pow(mu.base, n)).round} $unit"
