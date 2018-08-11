@@ -1,6 +1,7 @@
 Scala CLI Tools
 ===============
 
+[![Build Status](https://travis-ci.com/wookietreiber/scala-cli-tools.svg?branch=master)](https://travis-ci.com/wookietreiber/scala-cli-tools)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/67d9aaafa59a414e9b808ef45abb3fb0)](https://www.codacy.com/app/wookietreiber/scala-cli-tools?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wookietreiber/scala-cli-tools&amp;utm_campaign=Badge_Grade)
 [![Scaladoc](https://javadoc-badge.appspot.com/com.github.wookietreiber/scala-cli-tools_2.12.svg?label=scaladoc)](https://javadoc-badge.appspot.com/com.github.wookietreiber/scala-cli-tools_2.12)
 
