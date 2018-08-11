@@ -12,7 +12,7 @@ enablePlugins(GitVersioning)
 
 organization in ThisBuild := "com.github.wookietreiber"
 
-git.baseVersion in ThisBuild := "0.2.0"
+git.baseVersion in ThisBuild := "0.3.1"
 
 // ----------------------------------------------------------------------------
 // scala compiler options
